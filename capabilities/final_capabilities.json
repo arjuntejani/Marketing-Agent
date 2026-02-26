@@ -59,6 +59,13 @@
       "status": "enabled"
     },
     {
+      "id": "url-runner",
+      "name": "URL Runner",
+      "description": "Runs capabilities over HTTP.",
+      "category": "platform",
+      "status": "enabled"
+    },
+    {
       "id": "web-research",
       "name": "Web Research",
       "description": "Search, summarize, and compare public web information.",

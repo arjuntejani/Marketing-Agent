@@ -3,6 +3,13 @@
   "version": 1,
   "capabilities": [
     {
+      "id": "audience-intent-miner",
+      "name": "Audience Intent Miner",
+      "description": "Finds audience segments, intent patterns, and messaging angles.",
+      "category": "marketing",
+      "status": "enabled"
+    },
+    {
       "id": "brand-voice-optimizer",
       "name": "Brand Voice Optimizer",
       "description": "Rewrites output in your house style and approved tone.",

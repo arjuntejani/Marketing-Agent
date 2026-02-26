@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capability Merge Tool (GitHub Pages)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; max-width: 1000px; }
+    h1 { margin-bottom: 0.25rem; }
+    .muted { color: #555; margin-top: 0; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    textarea { width: 100%; min-height: 360px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    button { margin-right: 0.5rem; margin-top: 0.75rem; padding: 0.55rem 0.9rem; }
+    .full { margin-top: 1rem; }
+    @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Capability Merge Tool</h1>
+  <p class="muted">Static app for GitHub Pages. Paste/edit JSON, merge, and download final output.</p>
+
+  <div class="row">
+    <div>
+      <h3>Base JSON</h3>
+      <textarea id="baseJson"></textarea>
+    </div>
+    <div>
+      <h3>Custom JSON</h3>
+      <textarea id="customJson"></textarea>
+    </div>
+  </div>
+
+  <div class="full">
+    <button id="loadDefaults">Load repo defaults</button>
+    <button id="mergeBtn">Merge</button>
+    <button id="downloadBtn">Download final_capabilities.json</button>
+  </div>
+
+  <div class="full">
+    <h3>Merged Output</h3>
+    <textarea id="outputJson" readonly></textarea>
+  </div>
+
+  <script>
+    const baseEl = document.getElementById('baseJson');
+    const customEl = document.getElementById('customJson');
+    const outputEl = document.getElementById('outputJson');
+
+    function indexCaps(items) {
+      const out = {};
+      for (const item of items || []) {
+        if (!item.id) throw new Error("Every capability must have an 'id'.");
+        out[String(item.id)] = { ...item };
+      }
+      return out;
+    }
+
+    function mergeCapabilities(base, custom) {
+      const baseCaps = indexCaps(base.capabilities || []);
+      const customCaps = indexCaps(custom.capabilities || []);
+
+      const mergedCaps = { ...baseCaps };
+      for (const [capId, cap] of Object.entries(customCaps)) {
+        if (mergedCaps[capId]) {
+          mergedCaps[capId] = { ...mergedCaps[capId], ...cap };
+        } else {
+          mergedCaps[capId] = cap;
+        }
+      }
+
+      for (const capId of (custom.enabled || [])) {
+        if (mergedCaps[capId]) mergedCaps[capId].status = 'enabled';
+      }
+
+      for (const capId of (custom.disabled || [])) {
+        if (mergedCaps[capId]) mergedCaps[capId].status = 'disabled';
+      }
+
+      return {
+        profile: custom.profile || 'final-capability-profile',
+        version: Math.max(Number(base.version || 1), Number(custom.version || 1)),
+        capabilities: Object.values(mergedCaps).sort((a, b) => a.id.localeCompare(b.id)),
+        safety: custom.safety || base.safety || {},
+        integrations: [...(base.integrations || []), ...(custom.integrations || [])]
+      };
+    }
+
+    async function loadDefaults() {
+      const [baseResp, customResp] = await Promise.all([
+        fetch('../capabilities/base_capabilities.json'),
+        fetch('../capabilities/custom_capabilities.json')
+      ]);
+      baseEl.value = JSON.stringify(await baseResp.json(), null, 2);
+      customEl.value = JSON.stringify(await customResp.json(), null, 2);
+    }
+
+    function runMerge() {
+      const base = JSON.parse(baseEl.value || '{}');
+      const custom = JSON.parse(customEl.value || '{}');
+      const merged = mergeCapabilities(base, custom);
+      outputEl.value = JSON.stringify(merged, null, 2);
+    }
+
+    function downloadOutput() {
+      const blob = new Blob([outputEl.value || '{}'], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'final_capabilities.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('loadDefaults').addEventListener('click', loadDefaults);
+    document.getElementById('mergeBtn').addEventListener('click', () => {
+      try { runMerge(); } catch (err) { alert(err.message); }
+    });
+    document.getElementById('downloadBtn').addEventListener('click', downloadOutput);
+
+    loadDefaults().then(runMerge).catch(() => {
+      baseEl.value = '{\n  "profile": "pomelli-clone-baseline",\n  "version": 1,\n  "capabilities": []\n}';
+      customEl.value = '{\n  "profile": "my-custom-extensions",\n  "version": 1,\n  "capabilities": []\n}';
+      runMerge();
+    });
+  </script>
+</body>
+</html>

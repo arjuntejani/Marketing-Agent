@@ -1,0 +1,22 @@
+# Web scraping
+requests==2.32.3
+beautifulsoup4==4.12.3
+playwright==1.48.0
+
+# Local embedding storage (choose one backend)
+chromadb==0.5.5
+
+# Local LLM interface
+llama-cpp-python==0.2.90
+
+# File utilities
+python-dotenv==1.0.1
+pydantic==2.9.2
+tqdm==4.66.5
+
+# API
+fastapi==0.115.2
+uvicorn==0.30.6
+
+# Optional (install separately if supported on your OS/Python)
+# faiss-cpu==1.13.2

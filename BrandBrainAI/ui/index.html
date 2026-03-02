@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrandBrainAI Dashboard</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a30;
+      --panel-soft: #182341;
+      --text: #e7ebff;
+      --muted: #9aa4c7;
+      --accent: #7c9cff;
+      --accent-2: #41e3c4;
+      --danger: #ff6b8b;
+      --ok: #37d67a;
+      --shadow: 0 20px 40px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(1100px 700px at 85% -10%, rgba(124,156,255,.22), transparent),
+                  radial-gradient(900px 500px at -10% 10%, rgba(65,227,196,.15), transparent),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .wrap { max-width: 1200px; margin: 32px auto; padding: 0 18px; }
+    .hero { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
+    .title { font-size: 32px; font-weight: 800; letter-spacing: .2px; margin: 0; }
+    .subtitle { margin-top: 6px; color: var(--muted); }
+    .badge { border: 1px solid rgba(124,156,255,.35); color: var(--accent); padding: 8px 12px; border-radius: 999px; font-size: 12px; }
+    .grid { display: grid; grid-template-columns: 360px 1fr; gap: 16px; }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card h3 { margin: 0; padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,.08); font-size: 15px; }
+    .card-body { padding: 16px 18px; }
+    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    input {
+      width: 100%; border-radius: 10px; border: 1px solid rgba(255,255,255,.16);
+      background: var(--panel-soft); color: var(--text); padding: 12px 13px;
+    }
+    input:focus { outline: 2px solid rgba(124,156,255,.4); border-color: var(--accent); }
+    .row { display: flex; gap: 10px; margin-top: 12px; }
+    button {
+      border: 0; background: linear-gradient(135deg, var(--accent), #5e83ff);
+      color: white; padding: 11px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;
+    }
+    button.secondary { background: #293456; }
+    button:disabled { opacity: .65; cursor: progress; }
+    .status { margin-top: 12px; font-size: 13px; color: var(--muted); min-height: 20px; }
+    .pill { display:inline-flex; align-items:center; gap:6px; padding:5px 9px; border-radius:999px; font-size:12px; }
+    .pill.ok { background: rgba(55,214,122,.15); color: var(--ok); }
+    .pill.bad { background: rgba(255,107,139,.18); color: var(--danger); }
+    .metrics { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px; margin-top: 14px; }
+    .metric { background: var(--panel-soft); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 12px; }
+    .metric .k { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing:.6px; }
+    .metric .v { font-size: 20px; font-weight: 800; margin-top: 6px; }
+    .tabs { display:flex; gap:8px; padding: 0 18px 14px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .tab { background: #243056; color: var(--text); border:1px solid rgba(255,255,255,.08); padding:8px 10px; border-radius:8px; cursor:pointer; font-size:12px; }
+    .tab.active { background: var(--accent); border-color: transparent; }
+    pre { margin: 0; padding: 16px 18px; max-height: 500px; overflow:auto; background: #0d1429; color: #dbe3ff; }
+    .list { margin: 0; padding-left: 18px; }
+    .list li { margin-bottom: 8px; color: #dce4ff; }
+    @media (max-width: 980px){ .grid{ grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <h1 class="title">BrandBrainAI Dashboard</h1>
+        <div class="subtitle">Interactive pipeline console for extraction, analytics, Brand DNA, and campaign generation.</div>
+      </div>
+      <div class="badge">FastAPI + Local AI Pipeline</div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3>Run Analysis</h3>
+        <div class="card-body">
+          <label for="url">Store URL</label>
+          <input id="url" type="url" placeholder="https://store.com" />
+          <div class="row">
+            <button id="runBtn">Analyze</button>
+            <button id="demoBtn" class="secondary">Use Demo URL</button>
+          </div>
+          <div id="status" class="status">Ready.</div>
+          <div id="shopifyWrap" style="margin-top:8px;"></div>
+
+          <div class="metrics">
+            <div class="metric"><div class="k">Overall Score</div><div class="v" id="overall">--</div></div>
+            <div class="metric"><div class="k">Brand Consistency</div><div class="v" id="brand">--</div></div>
+            <div class="metric"><div class="k">Emotional Resonance</div><div class="v" id="emotion">--</div></div>
+            <div class="metric"><div class="k">Conversion Potential</div><div class="v" id="conversion">--</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Campaign Output</h3>
+        <div class="tabs">
+          <button class="tab active" data-tab="summary">Summary</button>
+          <button class="tab" data-tab="social">Social</button>
+          <button class="tab" data-tab="ads">Ads</button>
+          <button class="tab" data-tab="raw">Raw JSON</button>
+        </div>
+        <div id="panel-summary" class="card-body panel"></div>
+        <div id="panel-social" class="card-body panel" style="display:none;"></div>
+        <div id="panel-ads" class="card-body panel" style="display:none;"></div>
+        <pre id="panel-raw" class="panel" style="display:none;">Run analysis to view results.</pre>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const urlInput = document.getElementById('url');
+    const runBtn = document.getElementById('runBtn');
+    const demoBtn = document.getElementById('demoBtn');
+    const statusEl = document.getElementById('status');
+    const shopifyWrap = document.getElementById('shopifyWrap');
+
+    const overallEl = document.getElementById('overall');
+    const brandEl = document.getElementById('brand');
+    const emotionEl = document.getElementById('emotion');
+    const conversionEl = document.getElementById('conversion');
+
+    const panelSummary = document.getElementById('panel-summary');
+    const panelSocial = document.getElementById('panel-social');
+    const panelAds = document.getElementById('panel-ads');
+    const panelRaw = document.getElementById('panel-raw');
+
+    function setStatus(msg, isError=false){
+      statusEl.textContent = msg;
+      statusEl.style.color = isError ? 'var(--danger)' : 'var(--muted)';
+    }
+
+    function renderResult(result){
+      const evalData = result?.evaluation || {};
+      const scores = evalData?.scores || {};
+
+      overallEl.textContent = evalData?.overall_score ?? '--';
+      brandEl.textContent = scores?.brand_consistency ?? '--';
+      emotionEl.textContent = scores?.emotional_resonance ?? '--';
+      conversionEl.textContent = scores?.conversion_potential ?? '--';
+
+      const shopify = !!result?.shopify_detected;
+      shopifyWrap.innerHTML = `<span class="pill ${shopify ? 'ok' : 'bad'}">${shopify ? 'Shopify detected' : 'Shopify not detected'}</span>`;
+
+      panelSummary.innerHTML = `
+        <h4 style="margin:0 0 8px 0;">Strategy Objective</h4>
+        <div style="color:var(--muted); margin-bottom:10px;">${result?.strategy?.campaign_objective || 'N/A'}</div>
+        <h4 style="margin:0 0 8px 0;">Emotional Trigger</h4>
+        <div style="color:var(--muted); margin-bottom:10px;">${result?.strategy?.emotional_trigger || 'N/A'}</div>
+        <h4 style="margin:0 0 8px 0;">Psychological Lever</h4>
+        <div style="color:var(--muted);">${result?.strategy?.psychological_lever || 'N/A'}</div>
+      `;
+
+      const social = result?.final_campaign?.social_posts || result?.creatives?.social_posts || [];
+      panelSocial.innerHTML = `<ol class="list">${social.map(s => `<li>${s}</li>`).join('')}</ol>`;
+
+      const ads = result?.final_campaign?.ad_copy || result?.creatives?.ad_copy || [];
+      panelAds.innerHTML = ads.map(ad => `
+        <div style="margin-bottom:12px; padding:10px; border:1px solid rgba(255,255,255,.08); border-radius:10px; background:var(--panel-soft)">
+          <div style="font-weight:700">${ad.headline || 'N/A'}</div>
+          <div style="color:var(--muted); margin:6px 0;">${ad.primary_text || ''}</div>
+          <span class="pill ok">${ad.cta || 'CTA'}</span>
+        </div>
+      `).join('') || '<div style="color:var(--muted)">No ad copy generated.</div>';
+
+      panelRaw.textContent = JSON.stringify(result, null, 2);
+    }
+
+    runBtn.addEventListener('click', async () => {
+      const url = urlInput.value.trim();
+      if (!url) { setStatus('Please enter a valid URL.', true); return; }
+
+      runBtn.disabled = true;
+      setStatus('Running full pipeline... this can take a bit.');
+      try {
+        const res = await fetch('/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.detail || 'Request failed');
+        renderResult(data.result);
+        setStatus('Analysis complete. Files generated in memory/.');
+      } catch (err) {
+        setStatus(`Error: ${err.message}`, true);
+      } finally {
+        runBtn.disabled = false;
+      }
+    });
+
+    demoBtn.addEventListener('click', () => {
+      urlInput.value = 'https://example.com';
+      setStatus('Demo URL loaded. Click Analyze to run.');
+    });
+
+    document.querySelectorAll('.tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const key = btn.dataset.tab;
+        document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+        document.getElementById(`panel-${key}`).style.display = key === 'raw' ? 'block' : 'block';
+      });
+    });
+  </script>
+</body>
+</html>

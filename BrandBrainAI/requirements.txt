@@ -5,7 +5,6 @@ playwright==1.48.0
 
 # Local embedding storage (choose one backend)
 chromadb==0.5.5
-faiss-cpu==1.13.2
 
 # Local LLM interface
 llama-cpp-python==0.2.90
@@ -18,3 +17,6 @@ tqdm==4.66.5
 # API
 fastapi==0.115.2
 uvicorn==0.30.6
+
+# Optional (install separately if supported on your OS/Python)
+# faiss-cpu==1.13.2

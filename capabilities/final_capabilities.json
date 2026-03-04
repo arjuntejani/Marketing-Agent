@@ -1,0 +1,103 @@
+{
+  "profile": "my-custom-extensions",
+  "version": 1,
+  "capabilities": [
+    {
+      "id": "audience-intent-miner",
+      "name": "Audience Intent Miner",
+      "description": "Finds audience segments, intent patterns, and messaging angles.",
+      "category": "marketing",
+      "status": "enabled"
+    },
+    {
+      "id": "brand-voice-optimizer",
+      "name": "Brand Voice Optimizer",
+      "description": "Rewrites output in your house style and approved tone.",
+      "category": "marketing",
+      "status": "enabled"
+    },
+    {
+      "id": "campaign-strategist",
+      "name": "Campaign Strategist",
+      "description": "Builds campaign plans, channel mixes, and KPI trees.",
+      "category": "marketing",
+      "status": "enabled"
+    },
+    {
+      "id": "coding-assistant",
+      "name": "Coding Assistant",
+      "description": "Generate, refactor, and explain code across common languages.",
+      "category": "engineering",
+      "status": "enabled"
+    },
+    {
+      "id": "docs-workflow",
+      "name": "Docs Workflow",
+      "description": "Draft, rewrite, and format long-form documents and briefs.",
+      "category": "productivity",
+      "status": "enabled"
+    },
+    {
+      "id": "multimodal-understanding",
+      "name": "Multimodal Understanding",
+      "description": "Interpret text + image inputs and generate grounded responses.",
+      "category": "multimodal",
+      "status": "enabled"
+    },
+    {
+      "id": "presentation-builder",
+      "name": "Presentation Builder",
+      "description": "Convert ideas into presentation outlines and slide-ready copy.",
+      "category": "productivity",
+      "status": "enabled"
+    },
+    {
+      "id": "spreadsheet-reasoning",
+      "name": "Spreadsheet Reasoning",
+      "description": "Analyze tabular data, generate formulas, and propose dashboards.",
+      "category": "analytics",
+      "status": "enabled"
+    },
+    {
+      "id": "url-runner",
+      "name": "URL Runner",
+      "description": "Runs capabilities over HTTP.",
+      "category": "platform",
+      "status": "enabled"
+    },
+    {
+      "id": "web-research",
+      "name": "Web Research",
+      "description": "Search, summarize, and compare public web information.",
+      "category": "knowledge",
+      "status": "enabled"
+    }
+  ],
+  "safety": {
+    "policy_level": "medium",
+    "pii_protection": true,
+    "disallowed_content_filters": true
+  },
+  "integrations": [
+    {
+      "name": "search-provider",
+      "type": "api"
+    },
+    {
+      "name": "docs-suite",
+      "type": "app"
+    },
+    {
+      "name": "storage",
+      "type": "app"
+    },
+    {
+      "name": "crm",
+      "type": "app"
+    },
+    {
+      "name": "ad-platform",
+      "type": "api"
+    }
+  ]
+}

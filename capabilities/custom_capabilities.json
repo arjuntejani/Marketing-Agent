@@ -1,0 +1,46 @@
+{
+  "profile": "my-custom-extensions",
+  "version": 1,
+  "capabilities": [
+    {
+      "id": "brand-voice-optimizer",
+      "name": "Brand Voice Optimizer",
+      "description": "Rewrites output in your house style and approved tone.",
+      "category": "marketing",
+      "status": "enabled"
+    },
+    {
+      "id": "campaign-strategist",
+      "name": "Campaign Strategist",
+      "description": "Builds campaign plans, channel mixes, and KPI trees.",
+      "category": "marketing",
+      "status": "enabled"
+    },
+    {
+      "id": "audience-intent-miner",
+      "name": "Audience Intent Miner",
+      "description": "Finds audience segments, intent patterns, and messaging angles.",
+      "category": "marketing",
+      "status": "enabled"
+    },
+    {
+      "id": "url-runner",
+      "name": "URL Runner",
+      "description": "Runs capabilities over HTTP.",
+      "category": "platform",
+      "status": "enabled"
+    }
+  ],
+  "enabled": [],
+  "disabled": [],
+  "integrations": [
+    {
+      "name": "crm",
+      "type": "app"
+    },
+    {
+      "name": "ad-platform",
+      "type": "api"
+    }
+  ]
+}
